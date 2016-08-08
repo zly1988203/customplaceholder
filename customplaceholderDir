@@ -1,0 +1,50 @@
+.directive('customplaceholder', function ($timeout) {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function (scope, element, attr, ctrl) {
+
+            var debugMode = false; 
+
+            var isOperaMini = Object.prototype.toString.call(window.operamini) === '[object OperaMini]';
+
+            var isInputSupported = 'placeholder' in document.createElement('input') && !isOperaMini && !debugMode;
+
+            if (isInputSupported) { return;}
+
+            var ele = $(element);
+
+            var text = ele.attr('placeholder'),
+            pdl = 0,
+            height = ele.outerHeight(),
+            width = ele.outerWidth(),
+            placeholder = $('<span class="phTips">' + text + '</span>');
+
+            try {
+                pdl = ele.css('padding-left').match(/\d*/i)[0] * 1;
+            } catch (e) {
+                pdl = 5;
+            }
+
+            placeholder.addClass(element.attr('customplaceholder'));
+
+            placeholder.click(function () {
+                ele.focus();
+            });
+
+            placeholder.insertAfter(ele);
+
+            scope.$watch(attr.ngModel, function (val) {
+                if (val) {
+                    placeholder[0].textContent = "";
+                    placeholder.css({ display: 'none' });
+                } else {
+                    placeholder[0].textContent = text  ;
+                    placeholder.css({ display: 'inline' });
+                }
+            });
+
+
+        }
+    };
+})
