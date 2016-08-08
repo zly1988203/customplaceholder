@@ -1,0 +1,2 @@
+# customplaceholder
+兼容IE，实现h5特性placeholder属性的angularJs指令
